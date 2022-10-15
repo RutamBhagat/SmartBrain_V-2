@@ -1,0 +1,46 @@
+.face-img {
+    width: 50vw;
+}
+
+@media screen and (width <= 768px) {
+    .face-img {
+        width: 75vw;
+    }
+}
+
+.facebox {
+    position: relative;
+    width: 50vw;
+    margin: 2rem;
+}
+
+@media screen and (width <= 768px) {
+    .facebox {
+        width: 75vw;
+        margin: 1rem;
+    }
+}
+
+
+.bounding-box {
+    position: absolute;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.blue {
+    box-shadow: 0 0 0 3px #149df2 inset;
+    background: rgba(0, 0, 255, 0.15);
+}
+
+.red {
+    box-shadow: 0 0 0 3px #f21414 inset;
+    background: rgba(255, 0, 0, 0.492);
+}

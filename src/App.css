@@ -1,0 +1,13 @@
+button {
+  cursor: pointer;
+}
+
+.App {
+  text-align: center;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+}
+
