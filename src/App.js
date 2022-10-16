@@ -5,17 +5,12 @@ import ImageLinkForm from './Components/ImageLinkForm/ImageLinkForm'
 import Particles from './Components/Particles/Particles';
 import Signin from './Components/Signin/Signin';
 import Register from './Components/Register/Register';
-import Logo from './Components/Logo/Logo';
 import Clarifai, { COLOR_MODEL } from 'clarifai'
-import Rank from './Components/Rank/Rank';
-import FaceRecognition from './Components/FaceRecognition/FaceRecognition';
-import { render } from '@testing-library/react';
 
 
 const app = new Clarifai.App({
   apiKey: '6a378514618f4575ac8c8f49c549a351'
 })
-
 
 class App extends Component {
   constructor(){
@@ -84,11 +79,14 @@ class App extends Component {
       .then(response => {
         //This will only increase score if a face exists in the image
         if(response.outputs[0].data.regions[0].region_info.bounding_box) {
+          const boxes = this.calculateFaceLocation(response)
+          this.displayFaceBox(boxes)
           fetch("http://localhost:8080/image", {
             "method": "put",
             "headers": {"Content-Type": "application/json"},
             "body": JSON.stringify({
-              id: this.state.user.id
+              id: this.state.user.id,
+              faceCount: boxes.length 
             })
           })
           .then(response => response.json())
@@ -96,8 +94,6 @@ class App extends Component {
             this.setState(Object.assign(this.state.user, { entries: entryCount }))
           })
         }
-        const boxes = this.calculateFaceLocation(response)
-        this.displayFaceBox(boxes)
       })
       .catch(err => {
         const boxes = [{
