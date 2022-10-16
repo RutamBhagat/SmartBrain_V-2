@@ -11,3 +11,7 @@ button {
   justify-content: center;
 }
 
+.lower-z-index {
+  position: relative;
+  z-index: -100;
+}
