@@ -4,13 +4,13 @@ import Logo from '../Logo/Logo';
 import FaceRecognition from "../FaceRecognition/FaceRecognition";
 
 
-const ImageLinkForm = ({ onInputChange, onPictureSubmit, name, entries, box, imageUrl }) => {
+const ImageLinkForm = ({ onInputChange, onPictureSubmit, name, entries, boxes, imageUrl }) => {
     let picture = null
     if (imageUrl === "") {
         picture = <Logo />
     }
     else {
-        picture = <FaceRecognition box={box} imageUrl={imageUrl} />
+        picture = <FaceRecognition boxes={boxes} imageUrl={imageUrl} />
     }
     return (
         <section class="text-gray-600 body-font">

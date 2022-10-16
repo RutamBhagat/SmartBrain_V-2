@@ -23,7 +23,7 @@ class App extends Component {
     this.state = {
       input: "",
       imageUrl: "",
-      box: {},
+      boxes: [],
       route: "signin",
       isSignedIn: false,
       user: {
@@ -50,22 +50,28 @@ class App extends Component {
   }
 
   calculateFaceLocation = (data) => {
-    const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box
     const image = document.querySelector("#inputimage")
     const width = Number.parseInt(image.width)
     const height = Number.parseInt(image.height)
-    const box = {
-      leftCol: clarifaiFace.left_col * width,
-      topRow: clarifaiFace.top_row * height,
-      rightCol: width - (clarifaiFace.right_col * width),
-      bottomRow: height - (clarifaiFace.bottom_row * height),
-      color: "blue"
+    const faces = data.outputs[0].data.regions
+    const boxes = []
+    for(let inst of faces){
+      let clarifaiFace = inst.region_info.bounding_box
+      let box = {
+        leftCol: clarifaiFace.left_col * width,
+        topRow: clarifaiFace.top_row * height,
+        rightCol: width - (clarifaiFace.right_col * width),
+        bottomRow: height - (clarifaiFace.bottom_row * height),
+        color: "blue"
+      }
+      boxes.push(box)
     }
-    return box
+    console.log(boxes)
+    return boxes
   }
 
-  displayFaceBox = (box) => {
-    this.setState({box: box})
+  displayFaceBox = (boxes) => {
+    this.setState({boxes: boxes})
   }
 
   onInputChange = (event) => {
@@ -86,22 +92,22 @@ class App extends Component {
             })
           })
           .then(response => response.json())
-          .then(count => {
-            this.setState(Object.assign(this.state.user, { entries: count }))
+          .then(entryCount => {
+            this.setState(Object.assign(this.state.user, { entries: entryCount }))
           })
         }
-        const box = this.calculateFaceLocation(response)
-        this.displayFaceBox(box)
+        const boxes = this.calculateFaceLocation(response)
+        this.displayFaceBox(boxes)
       })
       .catch(err => {
-        const box = {
+        const boxes = [{
           leftCol: 0,
           topRow: 0,
           rightCol: 0,
           bottomRow: 0,
           color: "red"
-        }
-        this.displayFaceBox(box)
+        }]
+        this.displayFaceBox(boxes)
         window.alert("No faces detected")
       })
   }
@@ -118,7 +124,7 @@ class App extends Component {
   }
 
   render() {
-    const {isSignedIn, imageUrl, route, box, user} = this.state;
+    const {isSignedIn, imageUrl, route, boxes, user} = this.state;
     const {name, entries} = user
     return (
       <div className='App'>
@@ -128,7 +134,7 @@ class App extends Component {
           (
             route === "home"
             ? <>
-                <ImageLinkForm onInputChange={this.onInputChange} onPictureSubmit={this.onPictureSubmit} name={name} entries={entries} box={box} imageUrl={imageUrl}/>
+                <ImageLinkForm onInputChange={this.onInputChange} onPictureSubmit={this.onPictureSubmit} name={name} entries={entries} boxes={boxes} imageUrl={imageUrl}/>
               </> 
             : (
                 route === "signin"
