@@ -1,15 +1,11 @@
-import React, { Component } from "react";
 import "./App.css";
+import React, { Component } from "react";
 import Navigation from "./Components/Navigation/Navigation";
 import ImageLinkForm from "./Components/ImageLinkForm/ImageLinkForm";
 import Particles from "./Components/Particles/Particles";
 import Signin from "./Components/Signin/Signin";
 import Register from "./Components/Register/Register";
-import Clarifai, { FACE_DETECT_MODEL } from "clarifai";
 
-const app = new Clarifai.App({
-  apiKey: "6a378514618f4575ac8c8f49c549a351",
-});
 
 class App extends Component {
   constructor() {
@@ -74,42 +70,48 @@ class App extends Component {
   onPictureSubmit = async () => {
     this.setState({ imageUrl: this.state.input });
 
-    const response = await app.models.predict(
-      FACE_DETECT_MODEL,
-      this.state.input
-    );
-    try {
-      if (response.outputs[0].data.regions.length) {
-        const boxes = this.calculateFaceLocation(response);
+    let response = await fetch("http://localhost:8080/imageURL", {
+      method: "post",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        input: this.state.input
+      }),
+    })
+    response = response.json()
+    response.then(async (response) => {
+      try {
+        if (response.outputs[0].data.regions.length) {
+          const boxes = this.calculateFaceLocation(response);
+          this.displayFaceBox(boxes);
+  
+          let entryCount = await fetch("http://localhost:8080/image", {
+            method: "put",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              id: this.state.user.id,
+              faceCount: boxes.length,
+            }),
+          });
+          entryCount = entryCount.json();
+          //Don't know why but entry count is still a promise here insted of json. Hence,
+          entryCount.then((entryCount) =>
+            this.setState(Object.assign(this.state.user, { entries: entryCount }))
+          );
+        }
+      } catch {
+        const boxes = [
+          {
+            leftCol: 0,
+            topRow: 0,
+            rightCol: 0,
+            bottomRow: 0,
+            color: "red",
+          },
+        ];
         this.displayFaceBox(boxes);
-
-        let entryCount = await fetch("http://localhost:8080/image", {
-          method: "put",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            id: this.state.user.id,
-            faceCount: boxes.length,
-          }),
-        });
-        entryCount = entryCount.json();
-        //Don't know why but entry count is still a promise here insted of json. Hence,
-        entryCount.then((entryCount) =>
-          this.setState(Object.assign(this.state.user, { entries: entryCount }))
-        );
+        window.alert("No faces detected");
       }
-    } catch {
-      const boxes = [
-        {
-          leftCol: 0,
-          topRow: 0,
-          rightCol: 0,
-          bottomRow: 0,
-          color: "red",
-        },
-      ];
-      this.displayFaceBox(boxes);
-      window.alert("No faces detected");
-    }
+    })
   };
 
   onRouteChange = (route) => {
