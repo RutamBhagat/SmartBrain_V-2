@@ -22,7 +22,7 @@ const ParticlesComponent = () => {
         },
         modes: {
           push: {
-            quantity: 5,
+            quantity: 0,
           },
           repulse: {
             distance: 400,

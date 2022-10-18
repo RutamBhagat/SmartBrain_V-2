@@ -5,7 +5,7 @@ import ImageLinkForm from "./Components/ImageLinkForm/ImageLinkForm";
 import Particles from "./Components/Particles/Particles";
 import Signin from "./Components/Signin/Signin";
 import Register from "./Components/Register/Register";
-import Clarifai, { COLOR_MODEL } from "clarifai";
+import Clarifai, { FACE_DETECT_MODEL } from "clarifai";
 
 const app = new Clarifai.App({
   apiKey: "6a378514618f4575ac8c8f49c549a351",
@@ -75,7 +75,7 @@ class App extends Component {
     this.setState({ imageUrl: this.state.input });
 
     const response = await app.models.predict(
-      Clarifai.FACE_DETECT_MODEL,
+      FACE_DETECT_MODEL,
       this.state.input
     );
     try {
