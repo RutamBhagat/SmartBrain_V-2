@@ -1,6 +1,6 @@
 import React from "react";
 import Rank from "../Rank/Rank";
-import Logo from "../Logo/Logo";
+import LogoSrc from "./project.png";
 import FaceRecognition from "../FaceRecognition/FaceRecognition";
 
 const ImageLinkForm = ({
@@ -13,7 +13,15 @@ const ImageLinkForm = ({
 }) => {
   let picture = null;
   if (imageUrl === "") {
-    picture = <Logo />;
+    picture = (
+      <div class="w-full">
+        <img
+          class="object-cover object-center rounded-lg Tilt-inner"
+          alt="hero"
+          src={LogoSrc}
+        />
+      </div>
+    );
   } else {
     picture = <FaceRecognition boxes={boxes} imageUrl={imageUrl} />;
   }
