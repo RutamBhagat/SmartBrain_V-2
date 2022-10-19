@@ -71,6 +71,7 @@ class App extends Component {
     this.setState({ imageUrl: this.state.input });
 
     let response = await fetch("http://localhost:8080/imageURL", {
+    // let response = await fetch("https://arcane-ravine-33743.herokuapp.com/imageURL", {
       method: "post",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -85,6 +86,7 @@ class App extends Component {
           this.displayFaceBox(boxes);
   
           let entryCount = await fetch("http://localhost:8080/image", {
+          // let entryCount = await fetch("https://arcane-ravine-33743.herokuapp.com/image", {
             method: "put",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
