@@ -23,8 +23,8 @@ class Register extends Component {
   };
 
   onSubmitSignUp = async () => {
-    let user = await fetch("http://localhost:8080/register", {
-    // let user = await fetch("https://arcane-ravine-33743.herokuapp.com/register", {
+    // let user = await fetch("http://localhost:8080/register", {
+    let user = await fetch("https://arcane-ravine-33743.herokuapp.com/register", {
       method: "post",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
