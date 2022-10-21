@@ -1,50 +1,43 @@
 import "./App.css";
-import React, { Component } from "react";
+import React, { useState } from "react";
 import Navigation from "./Components/Navigation/Navigation";
-import ImageLinkForm from "./Components/ImageLinkForm/ImageLinkForm";
 import Particles from "./Components/Particles/Particles";
-import Signin from "./Components/Signin/Signin";
-import Register from "./Components/Register/Register";
+import Page from "./Components/Page/Page";
 
+const App = () => {
+  const [input, setInput] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  const [boxes, setBoxes] = useState([]);
+  const [route, setRoute] = useState("signin");
+  const [isSignedIn, setIsSignedIn] = useState(false);
+  const [user, setUser] = useState({
+    id: "",
+    name: "",
+    email: "",
+    entries: 0,
+    joined: "",
+  });
 
-class App extends Component {
-  constructor() {
-    super();
-    this.state = {
-      input: "",
-      imageUrl: "",
-      boxes: [],
-      route: "signin",
-      isSignedIn: false,
-      user: {
-        id: "",
-        name: "",
-        email: "",
-        entries: 0,
-        joined: "",
-      },
-    };
-  }
-
-  loadUser = (data) => {
-    this.setState({
-      user: {
-        id: data.id,
-        name: data.name,
-        email: data.email,
-        entries: data.entries,
-        joined: data.joined,
-      },
+  const loadUser = (data) => {
+    setUser({
+      id: data.id,
+      name: data.name,
+      email: data.email,
+      entries: data.entries,
+      joined: data.joined,
     });
-    this.setState({ imageUrl: "" });
   };
 
-  calculateFaceLocation = (data) => {
+  const onInputChange = (event) => {
+    setInput(event.target.value);
+  };
+
+  const calculateFaceLocation = (data) => {
     const image = document.querySelector("#inputimage");
     const width = Number.parseInt(image.width);
     const height = Number.parseInt(image.height);
     const faces = data.outputs[0].data.regions;
-    const boxes = [];
+    const boxesArray = [];
     for (let inst of faces) {
       let clarifaiFace = inst.region_info.bounding_box;
       let box = {
@@ -54,115 +47,90 @@ class App extends Component {
         bottomRow: height - clarifaiFace.bottom_row * height,
         color: "blue",
       };
-      boxes.push(box);
+      boxesArray.push(box);
     }
-    return boxes;
+    return boxesArray;
   };
 
-  displayFaceBox = (boxes) => {
-    this.setState({ boxes: boxes });
-  };
+  const onPictureSubmit = () => {
+    setImageUrl(input);
 
-  onInputChange = (event) => {
-    this.setState({ input: event.target.value });
-  };
-
-  onPictureSubmit = async () => {
-    this.setState({ imageUrl: this.state.input });
-
-    // let response = await fetch("http://localhost:8080/imageURL", {
-    let response = await fetch("https://arcane-ravine-33743.herokuapp.com/imageURL", {
+    // await fetch("http://localhost:8080/imageURL", {
+    fetch("https://arcane-ravine-33743.herokuapp.com/imageURL", {
       method: "post",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        input: this.state.input
+        input: input,
       }),
     })
-    response = response.json()
-    response.then(async (response) => {
-      try {
-        if (response.outputs[0].data.regions.length) {
-          const boxes = this.calculateFaceLocation(response);
-          this.displayFaceBox(boxes);
-  
-          // let entryCount = await fetch("http://localhost:8080/image", {
-          let entryCount = await fetch("https://arcane-ravine-33743.herokuapp.com/image", {
-            method: "put",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              id: this.state.user.id,
-              faceCount: boxes.length,
-            }),
-          });
-          entryCount = entryCount.json();
-          //Don't know why but entry count is still a promise here insted of json. Hence,
-          entryCount.then((entryCount) =>
-            this.setState(Object.assign(this.state.user, { entries: entryCount }))
-          );
+      .then((response) => response.json())
+      .then((response) => {
+        try {
+          if (response.outputs[0].data.regions.length) {
+            const boxesArray = calculateFaceLocation(response);
+            setBoxes(boxesArray);
+
+            // fetch("http://localhost:8080/image", {
+            fetch("https://arcane-ravine-33743.herokuapp.com/image", {
+              method: "put",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                id: user.id,
+                faceCount: boxesArray.length,
+              }),
+            })
+              .then((entryCount) => entryCount.json())
+              .then((entryCount) => {
+                // cant use setUsers() directly here for some reason
+                loadUser(Object.assign(user, { entries: entryCount }));
+              });
+          }
+        } catch {
+          const boxesArray = [
+            {
+              leftCol: 0,
+              topRow: 0,
+              rightCol: 0,
+              bottomRow: 0,
+              color: "red",
+            },
+          ];
+          setBoxes(boxesArray);
+          window.alert("No faces detected");
         }
-      } catch {
-        const boxes = [
-          {
-            leftCol: 0,
-            topRow: 0,
-            rightCol: 0,
-            bottomRow: 0,
-            color: "red",
-          },
-        ];
-        this.displayFaceBox(boxes);
-        window.alert("No faces detected");
-      }
-    })
+      });
   };
 
-  onRouteChange = (route) => {
+  const onRouteChange = (route) => {
     if (route === "home") {
-      this.setState({ isSignedIn: true });
+      setIsSignedIn(true);
     } else {
-      this.setState({ isSignedIn: false });
+      setIsSignedIn(false);
+      // You need to do this otherwise when a user logs-out and new user logs-in the imageurl will still be the privious one
+      setImageUrl("");
     }
-
-    this.setState({ route: route });
+    setRoute(route);
   };
 
-  render() {
-    const { isSignedIn, imageUrl, route, boxes, user } = this.state;
-    const { name, entries } = user;
-    let page = null;
-    if (route === "home") {
-      page = (
-        <ImageLinkForm
-          onInputChange={this.onInputChange}
-          onPictureSubmit={this.onPictureSubmit}
-          name={name}
-          entries={entries}
-          boxes={boxes}
-          imageUrl={imageUrl}
-        />
-      );
-    } else if (route === "signin") {
-      page = (
-        <Signin onRouteChange={this.onRouteChange} loadUser={this.loadUser} />
-      );
-    } else {
-      page = (
-        <Register onRouteChange={this.onRouteChange} loadUser={this.loadUser} />
-      );
-    }
-    return (
-      <div className="App">
-        <div class="lower-z-index">
-          <Particles />
-        </div>
-        <Navigation
-          isSignedIn={isSignedIn}
-          onRouteChange={this.onRouteChange}
-        />
-        {page}
+  return (
+    <div className="App">
+      <div class="lower-z-index">
+        <Particles />
       </div>
-    );
-  }
-}
+      <Navigation isSignedIn={isSignedIn} onRouteChange={onRouteChange} />
+      <Page
+        route={route}
+        name={user.name}
+        entries={user.entries}
+        boxes={boxes}
+        imageUrl={imageUrl}
+        onInputChange={onInputChange}
+        onPictureSubmit={onPictureSubmit}
+        onRouteChange={onRouteChange}
+        loadUser={loadUser}
+      />
+    </div>
+  );
+};
 
 export default App;
