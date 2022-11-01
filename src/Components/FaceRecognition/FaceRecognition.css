@@ -1,10 +1,10 @@
 .face-img {
-    width: 80%;
+    width: 40vw;
 }
 
 @media screen and (width <= 768px) {
     .face-img {
-        width: 90%;
+        width: 75vw;
     }
 }
 
