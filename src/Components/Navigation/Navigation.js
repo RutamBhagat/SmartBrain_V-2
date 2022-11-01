@@ -1,5 +1,6 @@
-import React from "react";
 import "./Navigation.css";
+import { Outlet, Link } from "react-router-dom";
+import { Fragment } from "react";
 
 const Navigation = ({ onRouteChange, isSignedIn }) => {
   let button = null;
@@ -23,27 +24,29 @@ const Navigation = ({ onRouteChange, isSignedIn }) => {
         </svg>
       </button>
     );
-  }
-  else {
-    button = <span></span>
+  } else {
+    button = <span></span>;
   }
   return (
-    <header class="text-gray-600 body-font custom-bg">
-      <div class="container-fluid mx-10 flex flex-wrap p-5 flex-col md:flex-row items-center">
-        <a class="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0">
-          <span class="ml-3 text-xl text-white">SmartBrain V-1</span>
-        </a>
-        <nav class="md:ml-auto flex flex-wrap items-center text-base justify-center">
-          {
-            // <a class="mr-5 hover:text-gray-900">First Link</a>
-            // <a class="mr-5 hover:text-gray-900">Second Link</a>
-            // <a class="mr-5 hover:text-gray-900">Third Link</a>
-            // <a class="mr-5 hover:text-gray-900">Fourth Link</a>
-          }
-        </nav>
-        {button}
-      </div>
-    </header>
+    <Fragment>
+      <header class="text-gray-600 body-font custom-bg">
+        <div class="container-fluid mx-10 flex flex-wrap p-5 flex-col md:flex-row items-center">
+          <a class="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0">
+            <span class="ml-3 text-xl text-white">SmartBrain V-1</span>
+          </a>
+          <nav class="md:ml-auto flex flex-wrap items-center text-base justify-center">
+            {
+              // <a class="mr-5 hover:text-gray-900">First Link</a>
+              // <a class="mr-5 hover:text-gray-900">Second Link</a>
+              // <a class="mr-5 hover:text-gray-900">Third Link</a>
+              // <a class="mr-5 hover:text-gray-900">Fourth Link</a>
+            }
+          </nav>
+          <Link to="/">{button}</Link>
+        </div>
+      </header>
+      <Outlet />
+    </Fragment>
   );
 };
 

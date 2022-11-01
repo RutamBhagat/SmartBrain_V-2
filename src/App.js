@@ -1,14 +1,16 @@
 import "./App.css";
-import React, { useState } from "react";
+import { useState } from "react";
+import { Routes, Route } from "react-router-dom";
 import Navigation from "./Components/Navigation/Navigation";
 import Particles from "./Components/Particles/Particles";
-import Page from "./Components/Page/Page";
+import Signin from "./Components/Signin/Signin";
+import Register from "./Components/Register/Register";
+import ImageLinkForm from "./Components/ImageLinkForm/ImageLinkForm";
 
 const App = () => {
   const [input, setInput] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [boxes, setBoxes] = useState([]);
-  const [route, setRoute] = useState("signin");
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [user, setUser] = useState({
     id: "",
@@ -55,7 +57,7 @@ const App = () => {
   const onPictureSubmit = () => {
     setImageUrl(input);
 
-    // await fetch("http://localhost:8080/imageURL", {
+    // fetch("http://localhost:8080/imageURL", {
     fetch("https://arcane-ravine-33743.herokuapp.com/imageURL", {
       method: "post",
       headers: { "Content-Type": "application/json" },
@@ -66,7 +68,7 @@ const App = () => {
       .then((response) => response.json())
       .then((response) => {
         try {
-          if (response.outputs[0].data.regions.length) {
+          if (response.outputs[0].data.regions.length !== 0) {
             const boxesArray = calculateFaceLocation(response);
             setBoxes(boxesArray);
 
@@ -81,9 +83,20 @@ const App = () => {
             })
               .then((entryCount) => entryCount.json())
               .then((entryCount) => {
-                // cant use setUsers() directly here for some reason
-                loadUser(Object.assign(user, { entries: entryCount }));
+                // use this
+                //// loadUser(Object.assign(user, { entries: entryCount }));
+                // cant use setUsers() directly here since you are updating the same user object and setUser wont update for same object hence we need to create a new object
+                // or use this the traditional way
+                setUser({
+                  id: user.id,
+                  name: user.name,
+                  email: user.email,
+                  entries: entryCount,
+                  joined: user.joined,
+                });
               });
+          } else {
+            throw new Error("No faces detected");
           }
         } catch {
           const boxesArray = [
@@ -109,7 +122,6 @@ const App = () => {
       // You need to do this otherwise when a user logs-out and new user logs-in the imageurl will still be the privious one
       setImageUrl("");
     }
-    setRoute(route);
   };
 
   return (
@@ -117,18 +129,40 @@ const App = () => {
       <div class="lower-z-index">
         <Particles />
       </div>
-      <Navigation isSignedIn={isSignedIn} onRouteChange={onRouteChange} />
-      <Page
-        route={route}
-        name={user.name}
-        entries={user.entries}
-        boxes={boxes}
-        imageUrl={imageUrl}
-        onInputChange={onInputChange}
-        onPictureSubmit={onPictureSubmit}
-        onRouteChange={onRouteChange}
-        loadUser={loadUser}
-      />
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <Navigation isSignedIn={isSignedIn} onRouteChange={onRouteChange} />
+          }
+        >
+          <Route
+            index
+            element={
+              <Signin onRouteChange={onRouteChange} loadUser={loadUser} />
+            }
+          />
+          <Route
+            path="signout"
+            element={
+              <Register onRouteChange={onRouteChange} loadUser={loadUser} />
+            }
+          />
+          <Route
+            path="home"
+            element={
+              <ImageLinkForm
+                onInputChange={onInputChange}
+                onPictureSubmit={onPictureSubmit}
+                name={user.name}
+                entries={user.entries}
+                boxes={boxes}
+                imageUrl={imageUrl}
+              />
+            }
+          />
+        </Route>
+      </Routes>
     </div>
   );
 };

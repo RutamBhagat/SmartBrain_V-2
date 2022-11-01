@@ -1,6 +1,9 @@
 import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 const Register = ({ onRouteChange, loadUser }) => {
+  //Note useNavigate can only be called at component level like this
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -32,6 +35,7 @@ const Register = ({ onRouteChange, loadUser }) => {
       .then((user) => {
         if (user.email !== undefined) {
           loadUser(user);
+          navigate("/home");
           onRouteChange("home");
         } else {
           window.alert("Unable to register");
@@ -103,23 +107,25 @@ const Register = ({ onRouteChange, loadUser }) => {
           <p class="leading-relaxed mb-4 text-white">
             Already have an account?
           </p>
-          <button
-            onClick={() => onRouteChange("signin")}
-            class="inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base mt-4 md:mt-0"
-          >
-            Sign In
-            <svg
-              fill="none"
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              class="w-4 h-4 ml-1"
-              viewBox="0 0 24 24"
+          <Link to="/">
+            <button
+              onClick={() => onRouteChange("signin")}
+              class="inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base mt-4 md:mt-0"
             >
-              <path d="M5 12h14M12 5l7 7-7 7"></path>
-            </svg>
-          </button>
+              Sign In
+              <svg
+                fill="none"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                class="w-4 h-4 ml-1"
+                viewBox="0 0 24 24"
+              >
+                <path d="M5 12h14M12 5l7 7-7 7"></path>
+              </svg>
+            </button>
+          </Link>
         </div>
       </div>
     </section>
