@@ -2,7 +2,7 @@
     width: 45vw;
 }
 
-@media screen and (width <= 768px) {
+@media screen and (width <= 1024px) {
     .face-img {
         width: 75vw;
     }
@@ -14,7 +14,7 @@
     margin: 2rem;
 }
 
-@media screen and (width <= 768px) {
+@media screen and (width <= 1024px) {
     .facebox {
         width: 75vw;
         margin: 1rem;
