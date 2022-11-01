@@ -55,7 +55,7 @@ const App = () => {
   };
 
   const onPictureSubmit = async () => {
-    setImageUrl(input);
+    await setImageUrl(input);
 
     // let response = await fetch("http://localhost:8080/imageURL", {
     let response = await fetch(
