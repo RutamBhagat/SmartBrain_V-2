@@ -1,5 +1,5 @@
 .face-img {
-    width: 40vw;
+    width: 45vw;
 }
 
 @media screen and (width <= 768px) {
@@ -10,7 +10,7 @@
 
 .facebox {
     position: relative;
-    width: 50vw;
+    width: 45vw;
     margin: 2rem;
 }
 
