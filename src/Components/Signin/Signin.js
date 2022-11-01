@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-
 const Signin = ({ onRouteChange, loadUser }) => {
   //Note useNavigate can only be called at component level like this
   const navigate = useNavigate();
@@ -16,26 +15,27 @@ const Signin = ({ onRouteChange, loadUser }) => {
     setSignInPassword(event.target.value);
   };
 
-  const onSubmitSignIn = () => {
-    // fetch("http://localhost:8080/signin", {
-    fetch("https://arcane-ravine-33743.herokuapp.com/signin", {
-      method: "post",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: signInEmail,
-        password: signInPassword,
-      }),
-    })
-      .then((user) => user.json())
-      .then((user) => {
-        if (user.email !== undefined) {
-          loadUser(user);
-          navigate("/home");
-          onRouteChange("home");
-        } else {
-          window.alert("Unable to log in");
-        }
-      });
+  const onSubmitSignIn = async () => {
+    // const response = await fetch("http://localhost:8080/signin", {
+    const response = await fetch(
+      "https://arcane-ravine-33743.herokuapp.com/signin",
+      {
+        method: "post",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: signInEmail,
+          password: signInPassword,
+        }),
+      }
+    );
+    const user = await response.json();
+    if (user.email !== undefined) {
+      loadUser(user);
+      navigate("/home");
+      onRouteChange("home");
+    } else {
+      window.alert("Unable to log in");
+    }
   };
 
   return (

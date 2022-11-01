@@ -20,27 +20,28 @@ const Register = ({ onRouteChange, loadUser }) => {
     setPassword(event.target.value);
   };
 
-  const onSubmitSignUp = () => {
-    // fetch("http://localhost:8080/register", {
-    fetch("https://arcane-ravine-33743.herokuapp.com/register", {
-      method: "post",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name: name,
-        email: email,
-        password: password,
-      }),
-    })
-      .then((user) => user.json())
-      .then((user) => {
-        if (user.email !== undefined) {
-          loadUser(user);
-          navigate("/home");
-          onRouteChange("home");
-        } else {
-          window.alert("Unable to register");
-        }
-      });
+  const onSubmitSignUp = async () => {
+    // const response = await fetch("http://localhost:8080/register", {
+    const response = await fetch(
+      "https://arcane-ravine-33743.herokuapp.com/register",
+      {
+        method: "post",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: name,
+          email: email,
+          password: password,
+        }),
+      }
+    );
+    const user = await response.json();
+    if (user.email !== undefined) {
+      loadUser(user);
+      navigate("/home");
+      onRouteChange("home");
+    } else {
+      window.alert("Unable to register");
+    }
   };
 
   return (

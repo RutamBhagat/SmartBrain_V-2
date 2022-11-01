@@ -54,64 +54,66 @@ const App = () => {
     return boxesArray;
   };
 
-  const onPictureSubmit = () => {
+  const onPictureSubmit = async () => {
     setImageUrl(input);
 
-    // fetch("http://localhost:8080/imageURL", {
-    fetch("https://arcane-ravine-33743.herokuapp.com/imageURL", {
-      method: "post",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        input: input,
-      }),
-    })
-      .then((response) => response.json())
-      .then((response) => {
-        try {
-          if (response.outputs[0].data.regions.length !== 0) {
-            const boxesArray = calculateFaceLocation(response);
-            setBoxes(boxesArray);
+    // let response = await fetch("http://localhost:8080/imageURL", {
+    let response = await fetch(
+      "https://arcane-ravine-33743.herokuapp.com/imageURL",
+      {
+        method: "post",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          input: input,
+        }),
+      }
+    );
+    response = await response.json();
+    try {
+      if (response.outputs[0].data.regions.length !== 0) {
+        const boxesArray = calculateFaceLocation(response);
+        setBoxes(boxesArray);
 
-            // fetch("http://localhost:8080/image", {
-            fetch("https://arcane-ravine-33743.herokuapp.com/image", {
-              method: "put",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                id: user.id,
-                faceCount: boxesArray.length,
-              }),
-            })
-              .then((entryCount) => entryCount.json())
-              .then((entryCount) => {
-                // use this
-                //// loadUser(Object.assign(user, { entries: entryCount }));
-                // cant use setUsers() directly here since you are updating the same user object and setUser wont update for same object hence we need to create a new object
-                // or use this the traditional way
-                setUser({
-                  id: user.id,
-                  name: user.name,
-                  email: user.email,
-                  entries: entryCount,
-                  joined: user.joined,
-                });
-              });
-          } else {
-            throw new Error("No faces detected");
+        // const data = await fetch("http://localhost:8080/image", {
+        const data = await fetch(
+          "https://arcane-ravine-33743.herokuapp.com/image",
+          {
+            method: "put",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              id: user.id,
+              faceCount: boxesArray.length,
+            }),
           }
-        } catch {
-          const boxesArray = [
-            {
-              leftCol: 0,
-              topRow: 0,
-              rightCol: 0,
-              bottomRow: 0,
-              color: "red",
-            },
-          ];
-          setBoxes(boxesArray);
-          window.alert("No faces detected");
-        }
-      });
+        );
+        const entryCount = await data.json();
+        // use this
+        //// loadUser(Object.assign(user, { entries: entryCount }));
+        // cant use setUsers() directly here since you are updating the same user object and setUser wont update for same object hence we need to create a new object
+        // or use this the traditional way
+        setUser({
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          entries: entryCount,
+          joined: user.joined,
+        });
+      } else {
+        throw new Error("No faces detected");
+      }
+    } catch {
+      const boxesArray = [
+        {
+          leftCol: 0,
+          topRow: 0,
+          rightCol: 0,
+          bottomRow: 0,
+          color: "red",
+        },
+      ];
+      setBoxes(boxesArray);
+      window.alert("No faces detected");
+    }
   };
 
   const onRouteChange = (route) => {
