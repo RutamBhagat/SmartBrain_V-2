@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import ErrorComponent from "../ErrorComponent/ErrorComponent";
 
-const Register = ({ onRouteChange, loadUser }) => {
+const Register = ({ onRouteChange, loadUser, showAlert }) => {
   //Note useNavigate can only be called at component level like this
   const navigate = useNavigate();
   const [name, setName] = useState("");
@@ -40,12 +41,19 @@ const Register = ({ onRouteChange, loadUser }) => {
       navigate("/home");
       onRouteChange("home");
     } else {
-      window.alert("Unable to register");
+      showAlert("popup-modal-register");
     }
   };
 
   return (
     <section class="text-gray-600 body-font">
+      <div className="flex flex-row">
+        <ErrorComponent
+          message={"Unable to register"}
+          id="popup-modal-register"
+          showAlert={showAlert}
+        />
+      </div>
       <div class="container px-5 py-24 mx-auto flex flex-wrap items-center">
         <div class="lg:w-2/6 md:w-1/2 bg-gray-100 rounded-lg p-8 flex flex-col md:ml-auto w-full mt-10 md:mt-0">
           <h2 class="text-gray-900 text-lg font-medium title-font mb-5">

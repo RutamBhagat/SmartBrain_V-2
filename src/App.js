@@ -112,7 +112,7 @@ const App = () => {
         },
       ];
       setBoxes(boxesArray);
-      window.alert("No faces detected");
+      showAlert("popup-modal-home")
     }
   };
 
@@ -124,6 +124,11 @@ const App = () => {
       // You need to do this otherwise when a user logs-out and new user logs-in the imageurl will still be the privious one
       setImageUrl("");
     }
+  };
+
+  const showAlert = (id) => {
+    const alert = document.querySelector(`#${id}`);
+    alert.classList.toggle("hidden");
   };
 
   return (
@@ -141,13 +146,13 @@ const App = () => {
           <Route
             index
             element={
-              <Signin onRouteChange={onRouteChange} loadUser={loadUser} />
+              <Signin onRouteChange={onRouteChange} loadUser={loadUser} showAlert={showAlert} />
             }
           />
           <Route
             path="signout"
             element={
-              <Register onRouteChange={onRouteChange} loadUser={loadUser} />
+              <Register onRouteChange={onRouteChange} loadUser={loadUser} showAlert={showAlert} />
             }
           />
           <Route
@@ -160,6 +165,7 @@ const App = () => {
                 entries={user.entries}
                 boxes={boxes}
                 imageUrl={imageUrl}
+                showAlert={showAlert}
               />
             }
           />

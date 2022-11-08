@@ -20,7 +20,7 @@ const FaceRecognition = ({ boxes, imageUrl }) => {
   return (
     <div class="flex flex-row justify-center">
       <div class="facebox">
-        <img id="inputimage" class="face-img" src={imageUrl} alt="" />
+        <img className="rounded-lg" id="inputimage" class="face-img" src={imageUrl} alt="" />
         {boxesElements}
       </div>
     </div>

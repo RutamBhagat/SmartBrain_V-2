@@ -2,6 +2,7 @@ import React from "react";
 import Rank from "../Rank/Rank";
 import LogoSrc from "./project.png";
 import FaceRecognition from "../FaceRecognition/FaceRecognition";
+import ErrorComponent from "../ErrorComponent/ErrorComponent";
 
 const ImageLinkForm = ({
   onInputChange,
@@ -10,6 +11,7 @@ const ImageLinkForm = ({
   entries,
   boxes,
   imageUrl,
+  showAlert
 }) => {
   let picture = null;
   if (imageUrl === "") {
@@ -27,6 +29,13 @@ const ImageLinkForm = ({
   }
   return (
     <section class="text-gray-600 body-font">
+      <div className="flex flex-row">
+        <ErrorComponent
+          message={"No faces detected"}
+          id="popup-modal-home"
+          showAlert={showAlert}
+        />
+      </div>
       <div class="container mx-auto px-5 py-24 flex flex-col items-center lg:flex-row">
         <div class="w-full mb-10 flex flex-row justify-center lg:w-1/2 ">
           {picture}
