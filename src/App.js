@@ -112,7 +112,7 @@ const App = () => {
         },
       ];
       setBoxes(boxesArray);
-      showAlert("popup-modal-home")
+      showAlert("popup-modal-home");
     }
   };
 
@@ -129,6 +129,8 @@ const App = () => {
   const showAlert = (id) => {
     const alert = document.querySelector(`#${id}`);
     alert.classList.toggle("hidden");
+    alert.classList.toggle("bg-black");
+    alert.classList.toggle("bg-opacity-75");
   };
 
   return (
@@ -146,13 +148,21 @@ const App = () => {
           <Route
             index
             element={
-              <Signin onRouteChange={onRouteChange} loadUser={loadUser} showAlert={showAlert} />
+              <Signin
+                onRouteChange={onRouteChange}
+                loadUser={loadUser}
+                showAlert={showAlert}
+              />
             }
           />
           <Route
             path="signout"
             element={
-              <Register onRouteChange={onRouteChange} loadUser={loadUser} showAlert={showAlert} />
+              <Register
+                onRouteChange={onRouteChange}
+                loadUser={loadUser}
+                showAlert={showAlert}
+              />
             }
           />
           <Route
