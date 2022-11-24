@@ -22,7 +22,8 @@ const Register = ({ onRouteChange, loadUser, showAlert }) => {
   };
 
   const onSubmitSignUp = async () => {
-    // const response = await fetch("http://localhost:8080/register", {
+    // const response = await fetch("http://localhost:8080/register",
+    // const response = await fetch("https://smartbrain-api-d00l.onrender.com/register",
     const response = await fetch(
       "https://arcane-ravine-33743.herokuapp.com/register",
       {
