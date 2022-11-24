@@ -57,9 +57,10 @@ const App = () => {
   const onPictureSubmit = async () => {
     await setImageUrl(input);
 
-    // let response = await fetch("http://localhost:8080/imageURL", {
+    // let response = await fetch("http://localhost:8080/imageURL",
+    // let response = await fetch("https://arcane-ravine-33743.herokuapp.com/imageURL",
     let response = await fetch(
-      "https://arcane-ravine-33743.herokuapp.com/imageURL",
+      "https://smartbrain-api-d00l.onrender.com/imageURL",
       {
         method: "post",
         headers: { "Content-Type": "application/json" },
@@ -74,9 +75,10 @@ const App = () => {
         const boxesArray = calculateFaceLocation(response);
         setBoxes(boxesArray);
 
-        // const data = await fetch("http://localhost:8080/image", {
+        // const data = await fetch("http://localhost:8080/image",
+        // const data = await fetch("https://arcane-ravine-33743.herokuapp.com/image",
         const data = await fetch(
-          "https://arcane-ravine-33743.herokuapp.com/image",
+          "https://smartbrain-api-d00l.onrender.com/image",
           {
             method: "put",
             headers: { "Content-Type": "application/json" },
