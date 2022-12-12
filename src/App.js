@@ -1,5 +1,5 @@
 import "./App.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import Navigation from "./Components/Navigation/Navigation";
 import Particles from "./Components/Particles/Particles";
@@ -19,6 +19,17 @@ const App = () => {
     entries: 0,
     joined: "",
   });
+
+  useEffect(() => {
+    fetch(
+      "https://smartbrain-api-d00l.onrender.com/",
+      {
+        method: "get",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({}),
+      }
+    );
+  }, [])
 
   const loadUser = (data) => {
     setUser({
