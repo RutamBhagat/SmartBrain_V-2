@@ -55,10 +55,8 @@ const App = () => {
   };
 
   const onPictureSubmit = async () => {
-    await setImageUrl(input);
-
+    setImageUrl(input);
     // let response = await fetch("http://localhost:8080/imageURL",
-    // let response = await fetch("https://arcane-ravine-33743.herokuapp.com/imageURL",
     let response = await fetch(
       "https://smartbrain-api-d00l.onrender.com/imageURL",
       {
@@ -76,7 +74,6 @@ const App = () => {
         setBoxes(boxesArray);
 
         // const data = await fetch("http://localhost:8080/image",
-        // const data = await fetch("https://arcane-ravine-33743.herokuapp.com/image",
         const data = await fetch(
           "https://smartbrain-api-d00l.onrender.com/image",
           {
@@ -89,17 +86,7 @@ const App = () => {
           }
         );
         const entryCount = await data.json();
-        // use this
-        //// loadUser(Object.assign(user, { entries: entryCount }));
-        // cant use setUsers() directly here since you are updating the same user object and setUser wont update for same object hence we need to create a new object
-        // or use this the traditional way
-        setUser({
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          entries: entryCount,
-          joined: user.joined,
-        });
+        setUser({ ...user, entries: entryCount })
       } else {
         throw new Error("No faces detected");
       }
